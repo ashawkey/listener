@@ -14,13 +14,27 @@ bp = Blueprint('route', __name__, url_prefix='/api/nonsense/')
 @bp.route('/meta')
 def get_nonsense_meta():
     token = request.args.get('token')
+    page = int(request.args.get('page'))
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_meta, (token,))
-    meta = cur.fetchall()
+    meta = cur.fetchall() # [[nid, ctime, mtime, body], ...]
+    
+    hasMore = True
+    start = (page - 1) * 10
+    end = page * 10
+    if end > len(meta):
+        end = len(meta)
+        hasMore = False
+    
+    meta = meta[start:end]
+    
     cur.close()
     db.close()
-    return jsonify(meta)
+    return jsonify({
+        'meta': meta,
+        'hasMore': hasMore,
+        })
 
 @bp.route('/post', methods=('POST', ))
 def post_nonsense():

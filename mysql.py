@@ -49,6 +49,7 @@ def init_db():
     cur.close()
     db.close()
 
+# $ flask init-db
 @click.command('init-db')
 @with_appcontext
 def init_db_command():
