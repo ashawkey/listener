@@ -63,15 +63,24 @@ def post_nonsense():
 @bp.route('/get')
 def get_nonsense_content():
     nid = request.args.get('nid')
+    token = request.args.get('token')
+
     db = mysql.get_db()
     cur = db.cursor()
     cur.execute(stmt_get, (nid,))
     content = cur.fetchone()
     cur.close()
     db.close()
+
     if content is None:
         return jsonify({
             'success': False,
+            'error': 'Content Error',
+        })
+    elif content[3] != token:
+        return jsonify({
+            'success': False,
+            'error': 'Token Error',
         })
     else:
         return jsonify({
@@ -114,14 +123,25 @@ def search_nonsense_content():
 @bp.route('/delete', methods=('POST', ))
 def delete_nonsense_content():
     nid = request.form['nid']
+    token = request.form['token']
 
     db = mysql.get_db()
     cur = db.cursor()
-    cur.execute(stmt_delete, (nid,))
-    db.commit()
-    cur.close()
-    db.close()
+    cur.execute(stmt_get, (nid,))
+    content = cur.fetchone()
     
-    return jsonify({
-        'success': True,
-        })
+    if content[3] != token:
+        cur.close()
+        db.close()
+        return jsonify({
+            'success': False,
+            'error': 'Token Error',
+            })
+    else:
+        cur.execute(stmt_delete, (nid,))
+        db.commit()
+        cur.close()
+        db.close()
+        return jsonify({
+            'success': True,
+            })

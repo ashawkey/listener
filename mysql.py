@@ -31,7 +31,7 @@ mysql = MySQL()
 
 stmt_size = "select count(*) from nonsense"
 stmt_meta = "select nid, ctime, mtime, body from nonsense where (deleted = 0) and (token = (%s)) order by mtime desc"
-stmt_get = "select ctime, mtime, body, state from nonsense where nid = (%s)"
+stmt_get = "select ctime, mtime, body, token, state from nonsense where nid = (%s)"
 stmt_post = "insert into nonsense(ctime, mtime, body, token, state) values(%s, %s, %s, %s, %s)"
 stmt_update = "update nonsense set mtime = (%s), body = (%s), state = (%s) where nid = (%s)"
 #stmt_post_or_update = "insert into nonsense(nid, ctime, mtime, body) values(%s, %s, %s, %s) on duplicate key update mtime = values(mtime), body = values(body)"
