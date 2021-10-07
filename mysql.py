@@ -6,6 +6,7 @@ from flask import current_app, g
 from flask.cli import with_appcontext
 from flaskext.mysql import MySQL
 
+# must configure mysql to use utf8mb4 as the default charset first!
 SCHEMA = [
     '''
     DROP TABLE if exists nonsense;
